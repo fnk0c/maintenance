@@ -142,6 +142,8 @@ status(){
 case $1 in
 	start)
 		start &
+		sleep 5
+		disown
 	;;
 
 	stop)
