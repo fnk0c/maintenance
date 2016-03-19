@@ -78,7 +78,7 @@ site_status(){
 	message="Eita giovana"
 	#Pages been watched
 	#Paginas sendo assitidas
-	pages='http://cienciahacker.com.br http://blog.cienciahacker.com.br'
+	pages='https://cienciahacker.ch https://blog.cienciahacker.ch'
 	
 	while [ 1 = 1 ]
 	do
@@ -86,12 +86,12 @@ site_status(){
 		do
 			#Retrieve HTML and parse it
 			#Coleta HTML e filtra
-			html=`curl -s $i | grep -i "servidor caiu" | cut -d "'" -f 2`
+			html=`curl -s $i | grep -i "$message"`
 			data=`date +"%d-%m-%y %R"`
 
 			#If offline, restart services
 			#Se offline, reinicia servicos
-			if [ "$html" == "Servidor caiu dnv..." ]
+			if [ "$html" != "" ]
 			then
 				systemctl restart mariadb
 				systemctl restart httpd
@@ -101,21 +101,20 @@ site_status(){
 				continue
 			fi
 		done
-		#Sleeps for 60 seconds
-		#Dorme por 60 segundos
-		sleep 60
+		#Sleeps for 300 seconds
+		#Dorme por 300 segundos
+		sleep 300
 	done
 }
 
 start(){
 	check
+	site_status & echo $! >> /var/run/maintenance.pid
 	while [ 1 = 1 ]
 	do
-		echo $$ > /var/run/maintenance.pid
-		att & echo $! >> /var/run/maintenance.pid
-		backup & echo $! >> /var/run/maintenance.pid
-#		site_status & echo $! >> /var/run/maintenance.pid
-		sleep 259200
+		att & 
+		backup & 
+		sleep 259200 # 3 days || 3 dias
 	done
 
 }
@@ -141,8 +140,9 @@ status(){
 
 case $1 in
 	start)
-		start &
+		start & echo $! > /var/run/maintenance.pid
 		sleep 5
+		echo "[+] Service started"
 		disown
 	;;
 
