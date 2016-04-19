@@ -41,6 +41,9 @@ ExecStart=/bin/bash /opt/maintenance start
 ExecReload=/bin/bash /opt/maintenance reload
 ExecStop=/bin/bash /opt/maintenance stop
 PIDFile=/var/run/maintenance.pid
+
+[Install]
+WantedBy=multi-user.target
   ```
 
 3. chmod to 644  
