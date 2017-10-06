@@ -8,7 +8,7 @@ check(){
 	#Check user ID
 	#Checa ID do usuario
 
-	#Command id returns a lot of not wanted info. So we use cut
+	#Command id returns a lot of unwanted info. So we used cut
 	#Comando id retorna muitas infos não necessarias. Por isso usamos o cut
 	get_id=`id | cut -d "=" -f2 | cut -d "(" -f1`
 	#User must be root
@@ -46,14 +46,14 @@ backup(){
 	site_dir="/home/cienciahacker/site"
 
 	date=`date +%d-%m-%y`
-	#Packet everything and send output to /dev/null
+	#Pack everything up and send output to /dev/null
 	#empacota tudo e manda  a  saida para /dev/null
 	tar -zcf blog_dir.tar.gz $blog_dir &> /dev/null
 	tar -zcf site_dir.tar.gz $site_dir &> /dev/null
 	#mysqldump to backup mysql database
 	#mysqldump para fazer backup do banco de dados mysql
 	`mysqldump -u $mysql_user -p$mysql_passwd $wp_db >> wp_db.sql` &> /dev/null
-	#Join all packages into one single package
+	#Join all packages into a single package
 	#Junta todos os pacotes em um unico
 	tar -zcf bkp_ch_$date.tar.gz blog_dir.tar.gz site_dir.tar.gz wp_db.sql &> /dev/null
 	#Remove unwanted packages
@@ -70,14 +70,14 @@ backup(){
 }
 
 site_status(){
-	#Verify is site is available
+	#Verify if site is available
 	#Verifica se o site esta disponivel
 	
 	#Error message
 	#Mensagem de erro
 	message="Eita giovana"
 	#Pages been watched
-	#Paginas sendo assitidas
+	#Paginas sendo assistidas
 	pages='https://cienciahacker.ch https://blog.cienciahacker.ch'
 	
 	while [ 1 = 1 ]
@@ -102,7 +102,7 @@ site_status(){
 			fi
 		done
 		#Sleeps for 300 seconds
-		#Dorme por 300 segundos
+		#Aguarda 300 segundos
 		sleep 300
 	done
 }
