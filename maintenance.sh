@@ -1,18 +1,18 @@
 #!/bin/bash
 
-#AUTHOR  = FNKOC
-#GITHUB  = https://github.com/fnk0c
-#LICENCE = GPLv2
+# AUTHOR  = FNKOC
+# GITHUB  = https://github.com/fnk0c
+# LICENCE = GPLv2
 
 check(){
-	#Check user ID
-	#Checa ID do usuario
+	# Check user ID
+	# Checa ID do usuário
 
-	#Command id returns a lot of unwanted info. So we used cut
-	#Comando id retorna muitas infos não necessarias. Por isso usamos o cut
+	# Command id returns a lot of unwanted information. So we used _cut_.
+	# Comando id retorna muitas informações desnecessárias. Por isso, usamos o _cut_.
 	get_id=`id | cut -d "=" -f2 | cut -d "(" -f1`
-	#User must be root
-	#Usuario deve ser root
+	# User must be root
+	# Usuário deve ser _root_
 	if [ $get_id -ne 0 ]
 	then
 		echo "[FAILED] Run with sudo"
@@ -21,24 +21,24 @@ check(){
 }
 
 att(){
-	#Update system (CENTOS)
-	#Atualiza sistema (CENTOS)
+	# Update system (CentOS)
+	# Atualiza sistema (CentOS)
 
 	data=`date +"%d-%m-%y %R"`
-	# -y to assume yes to all the questions and -q to keep it silent
-	# -y para assumir sim para todas as perguntas e -q para que seja silencioso
+	# -y to assume _yes_ to all the questions and _-q_ to keep it silent
+	# -y para assumir _sim_ para todas as perguntas e _-q_ para que seja silencioso
 	yum update -y -q
-	#Generate log output
-	#Gera log de saida
-	echo "[$data] Atualizacao realizada " >> /var/log/maintenance.log
+	# Generate log output
+	# Gera log de saída
+	echo "[$data] Atualização realizada " >> /var/log/maintenance.log
 }
 
 backup(){
-	#Do backup of blog, site, project page
-	#Faz backup do blog, site e pagina de projeto
+	# Make backup of blog, site and project page
+	# Faz backup do blog, site e página de projeto
 	
-	#Declare variables
-	#Declara variaveis
+	# Declare variables
+	# Declara variáveis
 	mysql_passwd="mysql passwd"
 	mysql_user="mysql user"
 	wp_db="mysql database"
@@ -46,51 +46,51 @@ backup(){
 	site_dir="/home/cienciahacker/site"
 
 	date=`date +%d-%m-%y`
-	#Pack everything up and send output to /dev/null
-	#empacota tudo e manda  a  saida para /dev/null
+	# Wrap everything up and send the output to /dev/null
+	# Empacota tudo e manda a saída para /dev/null
 	tar -zcf blog_dir.tar.gz $blog_dir &> /dev/null
 	tar -zcf site_dir.tar.gz $site_dir &> /dev/null
-	#mysqldump to backup mysql database
-	#mysqldump para fazer backup do banco de dados mysql
+	# mysqldump to backup mysql database
+	# mysqldump para fazer backup do banco de dados mysql
 	`mysqldump -u $mysql_user -p$mysql_passwd $wp_db >> wp_db.sql` &> /dev/null
-	#Join all packages into a single package
-	#Junta todos os pacotes em um unico
+	# Join all packages into a single package
+	# Unifica todos os pacotes em um único
 	tar -zcf bkp_ch_$date.tar.gz blog_dir.tar.gz site_dir.tar.gz wp_db.sql &> /dev/null
-	#Remove unwanted packages
-	#Remove pacotes não desejados
+	# Remove unwanted packages
+	# Remove pacotes indesejados
 	rm *_dir.tar.gz wp_db.sql
-	#Move to backup directory
-	#Move para diretorio de backup
+	# Move to backup directory
+	# Move para diretório de backup
 	mv bkp_ch_*.tar.gz /home/cienciahacker/backup
 
 	data=`date +"%d-%m-%y %R"`
-	#Generate log output
-	#Gera log de saida
+	# Generate log output
+	# Gera log de saída
 	echo "[$data] Backup realizado " >> /var/log/maintenance.log
 }
 
 site_status(){
-	#Verify if site is available
-	#Verifica se o site esta disponivel
+	# Check if site is available
+	# Verifica se o site está disponível
 	
-	#Error message
-	#Mensagem de erro
+	# Error message
+	# Mensagem de erro
 	message="Eita giovana"
-	#Pages been watched
-	#Paginas sendo assistidas
+	# Pages being watched
+	# Paginas sendo assistidas
 	pages='https://cienciahacker.ch https://blog.cienciahacker.ch'
 	
 	while [ 1 = 1 ]
 	do
 		for i in $pages
 		do
-			#Retrieve HTML and parse it
-			#Coleta HTML e filtra
+			# Retrieve HTML and parse it
+			# Coleta HTML e filtra
 			html=`curl -s $i | grep -i "$message"`
 			data=`date +"%d-%m-%y %R"`
 
-			#If offline, restart services
-			#Se offline, reinicia servicos
+			# If offline, restart services
+			# Se offline, reinicia serviços
 			if [ "$html" != "" ]
 			then
 				systemctl restart mariadb
@@ -101,8 +101,8 @@ site_status(){
 				continue
 			fi
 		done
-		#Sleeps for 300 seconds
-		#Aguarda 300 segundos
+		# Sleeps for 300 seconds
+		# Aguarda 300 segundos
 		sleep 300
 	done
 }
